@@ -3,6 +3,7 @@ package main
 import (
 	"strconv"
 	"strings"
+	"regexp"
 )
 
 // CONVERTS HEXADECIMAL TO A DECIMAL
@@ -77,7 +78,7 @@ func CaseTransForm(text string) string {
 	return strings.Join(result, " ")
 }
 
-// func FixArticle(text string) string {
+// HANDLES ARTICLE
 func FixArticle(text string) string {
 	words := strings.Fields(text)
 	for i := 0; i < len(words)-1; i++ {
@@ -99,4 +100,10 @@ func FixArticle(text string) string {
 		}
 	}
 	return strings.Join(words, " ")
+}
+
+// HANDLES QUOTES
+func FixQuote(text string) string {
+	re := regexp.MustCompile(`'\s*([^']+?)\s*'`)    
+	return re.ReplaceAllString(text, " '$1'")
 }

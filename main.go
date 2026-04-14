@@ -20,6 +20,7 @@ func main() {
 	text = BinToDec(text)
 	text = CaseTransForm(text)
 	text = FixArticle(text)
+	text = FixQuote(text)
 
 	err = os.WriteFile(outputFile, []byte(text + "\n"), 0644)
 	if err != nil {
