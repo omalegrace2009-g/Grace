@@ -48,52 +48,53 @@ func CaseTransForm(text string) string {
 	for i := 0; i < len(words); i++ {
 		f := words[i]
 		if strings.HasPrefix(f, "(") {
-		for !strings.HasSuffix(f, ")") {
-			i++
-			f += " " + words[i]
-		}
-		p := strings.Split(strings.Trim(f, "()"), ",") 
-		act := strings.TrimSpace(p[0])
-		n, _ := strconv.Atoi(strings.TrimSpace(strings.Join(p[1:], "")))
-		if n < 1 {
-			n = 1
-		}
-		for d := len(result) -n; d < len(result); d++ {
-			if d >= 0 {
-				switch act {
-				case "up":
-					result[d] = strings.ToUpper(result[d])
-				case "low":
-					result[d]= strings.ToLower(result[d])
-				case "cap":
-					result[d]= strings.Title(result[d])
+			for !strings.HasSuffix(f, ")") {
+				i++
+				f += " " + words[i]
+			}
+			p := strings.Split(strings.Trim(f, "()"), ",")
+			act := strings.TrimSpace(p[0])
+			n, _ := strconv.Atoi(strings.TrimSpace(strings.Join(p[1:], "")))
+			if n < 1 {
+				n = 1
+			}
+			for d := len(result) - n; d < len(result); d++ {
+				if d >= 0 {
+					switch act {
+					case "up":
+						result[d] = strings.ToUpper(result[d])
+					case "low":
+						result[d] = strings.ToLower(result[d])
+					case "cap":
+						result[d] = strings.Title(result[d])
+					}
 				}
 			}
+			continue
 		}
-		continue
+		result = append(result, f)
 	}
-	result = append(result, f)
-}
-return strings.Join(result, " ")
+	return strings.Join(result, " ")
 }
 
-//HANDLES ARTICLE
+// HANDLES ARTICLE
 func FixArticle(text string) string {
 	words := strings.Fields(text)
 	var result []string
 	for i := 0; i < len(words); i++ {
-		if words[i] == "a"  {
+		if words[i] == "a" {
 			words[i] += "an " + words[i]
 		}
 		if words[i] == "A" {
-			words[i] += "AN " + words[i] 
+			words[i] += "AN " + words[i]
 		}
 		if words[i] == "an" {
-			words[i] += "a " + words[i] 
+			words[i] += "a " + words[i]
+		}
+		if words[i] == "AN" {
+			words[i] += "A " + words[i]
+		}
+		result = append(result, words[i])
 	}
-	if words[i] == "AN" {
-			words[i] += "A " + words[i] 
-}
-result = append(result, words[i])
-	}
+	return strings.Join(result, " ")
 }
