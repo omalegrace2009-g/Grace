@@ -46,55 +46,57 @@ func CaseTransForm(text string) string {
 	words := strings.Fields(text)
 	var result []string
 	for i := 0; i < len(words); i++ {
-		f := words[i]
-		if strings.HasPrefix(f, "(") {
-			for !strings.HasSuffix(f, ")") {
+		d := words[i]
+		if strings.HasPrefix(d, "(") {
+			for !strings.HasSuffix(d, ")") {
 				i++
-				f += " " + words[i]
+				d += " " + words[i]
 			}
-			p := strings.Split(strings.Trim(f, "()"), ",")
+			p := strings.Split(strings.Trim(d, "()"), ",")
 			act := strings.TrimSpace(p[0])
 			n, _ := strconv.Atoi(strings.TrimSpace(strings.Join(p[1:], "")))
 			if n < 1 {
 				n = 1
 			}
-			for d := len(result) - n; d < len(result); d++ {
-				if d >= 0 {
+			for g := len(result) - n; g < len(result); g++ {
+				if g >= 0 {
 					switch act {
 					case "up":
-						result[d] = strings.ToUpper(result[d])
+						result[g] = strings.ToUpper(result[g])
 					case "low":
-						result[d] = strings.ToLower(result[d])
+						result[g] = strings.ToLower(result[g])
 					case "cap":
-						result[d] = strings.Title(result[d])
+						result[g] = strings.Title(result[g])
 					}
 				}
 			}
 			continue
 		}
-		result = append(result, f)
+		result = append(result, d)
 	}
 	return strings.Join(result, " ")
 }
 
-// HANDLES ARTICLE
+// func FixArticle(text string) string {
 func FixArticle(text string) string {
 	words := strings.Fields(text)
-	var result []string
-	for i := 0; i < len(words); i++ {
-		if words[i] == "a" {
-			words[i] += "an " + words[i]
+	for i := 0; i < len(words)-1; i++ {
+		d := strings.ToLower(words[i+1])
+		f := strings.ContainsRune("AEIOUHaeiouh", rune(d[0]))
+		if strings.ToLower(words[i]) == "an" && f {
+			if words[i] == "An" {
+				words[i] = "A"
+			} else {
+				words[i] = "a"
+			}
 		}
-		if words[i] == "A" {
-			words[i] += "AN " + words[i]
+		if strings.ToLower(words[i]) == "a" && f {
+			if words[i] == "A" {
+				words[i] = "An"
+			} else {
+				words[i] = "an"
+			}
 		}
-		if words[i] == "an" {
-			words[i] += "a " + words[i]
-		}
-		if words[i] == "AN" {
-			words[i] += "A " + words[i]
-		}
-		result = append(result, words[i])
 	}
-	return strings.Join(result, " ")
+	return strings.Join(words, " ")
 }
