@@ -21,7 +21,7 @@ func main() {
 	text = CaseTransForm(text)
 	text = FixArticle(text)
 	text = FixQuote(text)
-
+	text = fixPunctuation(text)
 	err = os.WriteFile(outputFile, []byte(text + "\n"), 0644)
 	if err != nil {
 		panic(err)

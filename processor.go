@@ -1,9 +1,9 @@
 package main
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
-	"regexp"
 )
 
 // CONVERTS HEXADECIMAL TO A DECIMAL
@@ -104,6 +104,15 @@ func FixArticle(text string) string {
 
 // HANDLES QUOTES
 func FixQuote(text string) string {
-	re := regexp.MustCompile(`'\s*([^']+?)\s*'`)    
-	return re.ReplaceAllString(text, " '$1'")
+	txt := regexp.MustCompile(`'\s*([^']+?)\s*'`)
+	return txt.ReplaceAllString(text, "'$1'")
+}
+
+// HANDLES PUNCTUATION
+func fixPunctuation(text string) string {
+	text = regexp.MustCompile(`.\s*\.s*\.`).ReplaceAllString(text, "...")
+	text = regexp.MustCompile(`\s+([,.?!:;])`).ReplaceAllString(text, "$1")
+	text = regexp.MustCompile(`([,.;:?!])([^,.;:?!])`).ReplaceAllString(text, "$1 $2")
+	text = regexp.MustCompile(`\s+`).ReplaceAllString(text, " ")
+	return strings.TrimSpace(text)
 }
