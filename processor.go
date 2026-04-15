@@ -1,57 +1,56 @@
 package main
 
 import (
-	"regexp"
-	"strconv"
 	"strings"
+	"strconv"
+	"regexp"
 )
-
-// CONVERTS HEXADECIMAL TO A DECIMAL
+//HEXADECIMAL TO DECIMAL
 func HexToDec(text string) string {
-	words := strings.Fields(text)
+	word := strings.Fields(text)
 	var result []string
-	for i := 0; i < len(words); i++ {
-		if words[i] == "(hex)" && i > 0 {
-			hexVal := words[i-1]
+	for i := 0; i < len(word); i++ {
+		if word[i] == "(hex)" && i > 0 {
+			hexVal := word[i -1]
 			hex, err := strconv.ParseInt(hexVal, 16, 64)
 			if err == nil {
-				result[len(result)-1] = strconv.FormatInt(hex, 10)
+				result[len(result) -1] = strconv.FormatInt(hex, 10)
 			}
 			continue
 		}
-		result = append(result, words[i])
+		result = append(result, word[i])
 	}
 	return strings.Join(result, " ")
 }
 
-// CONVERTS BINARY TO A DECIMAL
+//BINARY TO DECIMAL
 func BinToDec(text string) string {
-	words := strings.Fields(text)
+	word := strings.Fields(text)
 	var result []string
-	for i := 0; i < len(words); i++ {
-		if words[i] == "(bin)" && i > 0 {
-			binVal := words[i-1]
-			bin, err := strconv.ParseInt(binVal, 2, 64)
+	for i := 0; i < len(word); i++ {
+		if word[i] == "(bin)" && i > 0 {
+			hexVal := word[i -1]
+			hex, err := strconv.ParseInt(hexVal, 2, 64)
 			if err == nil {
-				result[len(result)-1] = strconv.FormatInt(bin, 10)
+				result[len(result) -1] = strconv.FormatInt(hex, 10)
 			}
 			continue
 		}
-		result = append(result, words[i])
+		result = append(result, word[i])
 	}
 	return strings.Join(result, " ")
 }
 
-// HANDLES (UP) & (UP, N), (LOW) & (LOW, N), (CAP) & (CAP, N)
-func CaseTransForm(text string) string {
-	words := strings.Fields(text)
+//HANDLES (UP) & (UP ,N), (LOW) & (LOW, N), (CAP) & (CAP, N)
+func CaseTransform(text string) string {
+	word := strings.Fields(text)
 	var result []string
-	for i := 0; i < len(words); i++ {
-		d := words[i]
+	for i := 0; i < len(word); i++ {
+		d := word[i]
 		if strings.HasPrefix(d, "(") {
 			for !strings.HasSuffix(d, ")") {
 				i++
-				d += " " + words[i]
+				d += " " + word[i]
 			}
 			p := strings.Split(strings.Trim(d, "()"), ",")
 			act := strings.TrimSpace(p[0])
@@ -59,7 +58,7 @@ func CaseTransForm(text string) string {
 			if n < 1 {
 				n = 1
 			}
-			for g := len(result) - n; g < len(result); g++ {
+			for g := len(result)-n; g < len(result); g++ {
 				if g >= 0 {
 					switch act {
 					case "up":
@@ -78,41 +77,38 @@ func CaseTransForm(text string) string {
 	return strings.Join(result, " ")
 }
 
-// HANDLES ARTICLE
+//HANDLE ARTICLE
 func FixArticle(text string) string {
-	words := strings.Fields(text)
-	for i := 0; i < len(words)-1; i++ {
-		d := strings.ToLower(words[i+1])
-		f := strings.ContainsRune("AEIOUHaeiouh", rune(d[0]))
-		if strings.ToLower(words[i]) == "an" && f {
-			if words[i] == "An" {
-				words[i] = "A"
-			} else {
-				words[i] = "a"
-			}
+word := strings.Fields(text)
+for i := 0; i < len(word)-1; i++ {
+	s := strings.ToLower(word[i+1])
+	d := strings.ContainsRune("aeiouhAEIOUH", rune(s[0]))
+	if strings.ToLower(word[i]) == "an" && d {
+		if word[i] == "An" {
+			word[i] = "A"
+		} else {
+			word[i] = "a"
 		}
-		if strings.ToLower(words[i]) == "a" && f {
-			if words[i] == "A" {
-				words[i] = "An"
+	}
+		if strings.ToLower(word[i]) == "a" && d {
+			if word[i] == "A" {
+				word[i] = "An"
 			} else {
-				words[i] = "an"
+				word[i] = "an"
 			}
 		}
 	}
-	return strings.Join(words, " ")
+return strings.Join(word, " ")
 }
-
-// HANDLES QUOTES
+//HANDLES QUOTES
 func FixQuote(text string) string {
-	txt := regexp.MustCompile(`'\s*([^']+?)\s*'`)
-	return txt.ReplaceAllString(text, "'$1'")
+s := regexp.MustCompile(`'\s*([^']+?)\s*'`)
+return s.ReplaceAllString(text, "'$1'")
 }
 
-// HANDLES PUNCTUATION
-func fixPunctuation(text string) string {
-	text = regexp.MustCompile(`.\s*\.s*\.`).ReplaceAllString(text, "...")
-	text = regexp.MustCompile(`\s+([,.?!:;])`).ReplaceAllString(text, "$1")
-	text = regexp.MustCompile(`([,.;:?!])([^,.;:?!])`).ReplaceAllString(text, "$1 $2")
-	text = regexp.MustCompile(`\s+`).ReplaceAllString(text, " ")
-	return strings.TrimSpace(text)
+//HANDLE PUNCTUATION
+func FixPunctuation(text string) string {
+	text = regexp.MustCompile(`.\s*\.s*\.`).ReplaceAllString(text,  "...")
+	text = regexp.MustCompile(`\s+([,.:;?1]+)`).ReplaceAllString(text, "$1")
+	return text
 }
